@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CureSense AI — Know Before You Go</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#0F6B52"/>
+        <path d="M6 34 H18 L22 22 L28 46 L34 30 L38 34 H46" fill="none" stroke="#EAF7F1" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M46 34 C46 26 54 24 58 30 C58 38 50 44 46 48 C42 44 34 38 34 30 C36 25 42 26 46 34 Z" fill="#E8A33D"/>
+      </svg>
+      <span>CureSense<em>AI</em></span>
+    </a>
+    <nav class="topnav">
+      <a href="#how">How it works</a>
+      <a href="#modes">Get guidance</a>
+      <a href="#safety">Safety</a>
+    </nav>
+    <button class="btn btn-primary topnav-cta" onclick="scrollToModes()">Start now</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">Home remedies · Medicine info · Always know when to see a doctor</span>
+        <h1>Feeling off?<br>Ask <span class="accent-underline">before</span> you assume.</h1>
+        <p class="hero-sub">Describe a symptom or name a medicine. CureSense AI tells you what's mild enough to manage at home, and draws a hard line the moment something needs a doctor — instantly.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="scrollToModes()">Check a symptom</button>
+          <button class="btn btn-ghost btn-lg" onclick="scrollToModes()">Look up a medicine</button>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item"><strong>3 tiers</strong><span>mild · moderate · urgent</span></div>
+          <div class="trust-item"><strong>0</strong><span>dosages ever prescribed</span></div>
+          <div class="trust-item"><strong>24/7</strong><span>on your terminal or browser</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="chat-mock">
+          <div class="chat-mock-head">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="chat-mock-title">Symptom Advisor</span>
+          </div>
+          <div class="chat-mock-body">
+            <div class="bubble bubble-user">I have a dry cough since morning</div>
+            <div class="bubble bubble-ai">
+              <span class="tag tag-mild">MILD</span>
+              Try warm water with honey and a pinch of turmeric, plus steam inhalation twice a day.
+            </div>
+            <div class="bubble bubble-user">Can I add sugar instead of honey?</div>
+            <div class="bubble bubble-ai bubble-typing"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+        <svg class="pulse-line" viewBox="0 0 400 80" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 40 H120 L140 10 L165 70 L185 25 L200 40 H260 C275 20 300 20 315 40 C320 55 300 65 285 72 C270 65 262 52 262 40" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="wrap">
+      <h2>How CureSense reasons</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <h3>You describe it</h3>
+          <p>A symptom in plain words, or a medicine name — however you'd say it to a pharmacist.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <h3>It classifies severity</h3>
+          <p>Every symptom is sorted into mild, moderate, or urgent before any advice is given.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <h3>You get the right response</h3>
+          <p>A home remedy, a nudge to see a doctor, or — if it's serious — a direct line: go now.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODES / APP -->
+  <section class="modes" id="modes">
+    <div class="wrap">
+      <h2>Start a conversation</h2>
+      <p class="modes-sub">Pick a mode. Ask follow-ups exactly like you would to a person.</p>
+
+      <div class="mode-cards" id="mode-cards">
+        <button class="mode-card" data-mode="symptom" onclick="chooseMode('symptom')">
+          <span class="mode-icon">🌿</span>
+          <h3>Symptom Advisor</h3>
+          <p>Describe how you feel. Get a severity check and a remedy, or a clear "see a doctor."</p>
+          <span class="mode-cta">Start checking →</span>
+        </button>
+        <button class="mode-card" data-mode="medicine" onclick="chooseMode('medicine')">
+          <span class="mode-icon">💊</span>
+          <h3>Medicine Info</h3>
+          <p>Name a medicine. Learn what it treats and what to watch for — no dosages, ever.</p>
+          <span class="mode-cta">Look it up →</span>
+        </button>
+      </div>
+
+      <!-- CHAT PANEL -->
+      <div class="chat-panel" id="chat-panel" hidden>
+        <div class="chat-panel-head">
+          <div class="chat-panel-title">
+            <span id="chat-mode-icon">🌿</span>
+            <span id="chat-mode-label">Symptom Advisor</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="goBack()">← Back</button>
+        </div>
+        <div class="chat-panel-body" id="messages"></div>
+        <div class="chat-panel-input">
+          <input type="text" id="user-input" placeholder="Type your message…" autocomplete="off">
+          <button class="btn btn-primary" id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section class="safety" id="safety">
+    <div class="wrap safety-inner">
+      <div class="safety-badge">⚠️</div>
+      <div>
+        <h2>What CureSense will never do</h2>
+        <ul class="safety-list">
+          <li>Name a specific allopathic medicine or dosage to take</li>
+          <li>Replace a real diagnosis from a qualified doctor</li>
+          <li>Stay quiet when a symptom looks urgent — it will always tell you to seek care immediately</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>CureSense AI — a guidance tool, not a diagnosis. When in doubt, see a doctor.</span>
+    <span>Built with LangChain + Mistral</span>
+  </div>
+</footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
