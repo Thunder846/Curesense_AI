@@ -232,8 +232,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 👨‍💻 Author
 
-**Bhunesh Mittal**  
-[GitHub](https://github.com/bhuvneshmittal84) · [LinkedIn](https://www.linkedin.com/in/bhunesh-mittal-18b3b6288/)
+**Varun Raj**  
 
 ---
 
