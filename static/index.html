@@ -3,163 +3,507 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B4F3E">
 <title>CureSense AI — Know Before You Go</title>
-<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1F1A;
+    --ink-soft:#3D524B;
+    --bg:#F6F3EC;
+    --surface:#FFFFFF;
+    --line:#E2DDD1;
+    --brand:#0B6B52;
+    --brand-dark:#0B4F3E;
+    --brand-tint:#E3F2EC;
+    --accent:#F2A93B;
+    --mild:#1E8A5A;   --mild-bg:#E2F5EA;
+    --mod:#B86A00;    --mod-bg:#FFF1DA;
+    --urgent:#C8322B; --urgent-bg:#FDE6E4;
+    --radius:18px;
+    --shadow:0 1px 2px rgba(14,31,26,.06),0 8px 24px rgba(14,31,26,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.12;letter-spacing:-.01em}
+  a{color:inherit}
+  button{font:inherit;cursor:pointer}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  svg.i{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid transparent;border-radius:999px;padding:10px 18px;font-weight:600;font-size:15px;transition:transform .15s,background .15s,border-color .15s}
+  .btn:focus-visible,.chip:focus-visible,.tab:focus-visible,.mode-card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--accent);color:var(--ink)}
+  .btn-primary:hover{background:#E8992A}
+  .btn-brand{background:var(--brand);color:#fff}
+  .btn-brand:hover{background:var(--brand-dark)}
+  .btn-outline{border-color:rgba(255,255,255,.5);color:#fff;background:transparent}
+  .btn-outline:hover{background:rgba(255,255,255,.1);border-color:#fff}
+  .btn-lg{padding:14px 24px;font-size:16px}
+
+  /* Emergency strip */
+  .sos{background:var(--urgent);color:#fff;font-size:14px}
+  .sos .wrap{display:flex;gap:10px;align-items:center;justify-content:center;padding-top:8px;padding-bottom:8px;text-align:center}
+  .sos strong{font-weight:700}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--brand-dark);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:18px}
+  .brand em{font-style:normal;color:var(--accent);margin-left:2px}
+  .topnav{display:none;gap:28px}
+  .topnav a{text-decoration:none;font-weight:500;opacity:.85}
+  .topnav a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+  @media(min-width:820px){.topnav{display:flex}}
+
+  /* Hero */
+  .hero{background:var(--brand-dark);color:#fff;padding:56px 0 96px}
+  .hero-inner{display:grid;gap:48px;align-items:center}
+  @media(min-width:960px){.hero-inner{grid-template-columns:1.1fr .9fr}}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 4px rgba(74,222,128,.25)}
+  .hero h1{font-size:clamp(38px,6vw,64px);margin:20px 0 18px;text-wrap:balance}
+  .hero h1 .hl{color:var(--accent)}
+  .hero-sub{font-size:18px;color:#CFE5DC;max-width:560px;text-wrap:pretty}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+  .legend-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:8px 12px;font-size:14px}
+  .legend-item b{font-weight:700}
+  .sw{width:10px;height:10px;border-radius:50%}
+  .sw.mild{background:#4ADE80}.sw.mod{background:var(--accent)}.sw.urgent{background:#F87171}
+
+  .hero-card{background:var(--surface);color:var(--ink);border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+  .hero-card-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}
+  .avatar{width:30px;height:30px;border-radius:10px;background:var(--brand-tint);color:var(--brand);display:grid;place-items:center}
+  .hero-card-body{padding:18px;display:flex;flex-direction:column;gap:12px;font-size:15px}
+
+  /* Bubbles (shared) */
+  .bubble{max-width:85%;padding:12px 14px;border-radius:16px;text-wrap:pretty}
+  .bubble.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
+  .bubble.ai{align-self:flex-start;background:#F3F1EA;border-bottom-left-radius:4px}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:999px;margin-bottom:6px}
+  .badge.mild{color:var(--mild);background:var(--mild-bg)}
+  .badge.moderate{color:var(--mod);background:var(--mod-bg)}
+  .badge.urgent{color:var(--urgent);background:var(--urgent-bg)}
+  .badge.info{color:var(--brand);background:var(--brand-tint)}
+  .bubble.ai.is-urgent{background:var(--urgent-bg);border:1px solid #F5B8B3}
+  .typing{display:inline-flex;gap:4px;padding:16px}
+  .typing span{width:7px;height:7px;border-radius:50%;background:#9AA8A2;animation:blink 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+
+  /* Sections */
+  section{padding:72px 0}
+  .kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+  .section-title{font-size:clamp(30px,4vw,42px);margin:8px 0 10px;text-wrap:balance}
+  .section-sub{color:var(--ink-soft);font-size:17px;max-width:620px}
+
+  /* Mode selector */
+  .app{margin-top:-64px;padding-top:0}
+  .app-shell{background:var(--surface);border-radius:26px;box-shadow:var(--shadow);border:1px solid var(--line);padding:28px}
+  @media(min-width:720px){.app-shell{padding:36px}}
+  .step-label{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;margin-bottom:14px}
+  .step-label .n{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px}
+  .mode-cards{display:grid;gap:16px}
+  @media(min-width:720px){.mode-cards{grid-template-columns:1fr 1fr}}
+  .mode-card{position:relative;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s,box-shadow .15s,transform .15s}
+  .mode-card:hover{border-color:var(--brand);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .mode-card[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-tint)}
+  .mode-card .check{position:absolute;top:18px;right:18px;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;background:#fff}
+  .mode-card[aria-pressed="true"] .check{background:var(--brand);border-color:var(--brand);color:#fff}
+  .mode-card .check svg{width:14px;height:14px;opacity:0}
+  .mode-card[aria-pressed="true"] .check svg{opacity:1}
+  .mode-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center}
+  .mode-icon.sym{background:var(--mild-bg);color:var(--mild)}
+  .mode-icon.med{background:#E7EEFB;color:#2F5BBF}
+  .mode-icon svg{width:24px;height:24px}
+  .mode-card h3{font-size:22px}
+  .mode-card p{color:var(--ink-soft);font-size:15px}
+  .mode-card ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink-soft);margin-top:4px}
+  .mode-card li{display:flex;gap:8px;align-items:flex-start}
+  .mode-card li svg{width:16px;height:16px;color:var(--brand);margin-top:3px}
+
+  /* Chat panel */
+  .chat{margin-top:28px}
+  .chat-panel{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#FBFAF6}
+  .chat-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .chat-title{display:flex;align-items:center;gap:10px;font-weight:700}
+  .status{font-size:12px;font-weight:600;color:var(--mild);display:flex;align-items:center;gap:6px}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+  .tabs{display:flex;background:#F0EDE4;border-radius:999px;padding:4px}
+  .tab{border:0;background:transparent;padding:7px 14px;border-radius:999px;font-weight:600;font-size:14px;color:var(--ink-soft)}
+  .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+  .chat-body{height:380px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+  .empty{margin:auto;text-align:center;max-width:380px;color:var(--ink-soft)}
+  .empty h4{font-family:Fraunces,serif;font-size:20px;color:var(--ink);margin:10px 0 6px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 14px}
+  .chips-label{width:100%;font-size:13px;font-weight:600;color:var(--ink-soft)}
+  .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:14px;color:var(--ink)}
+  .chip:hover{border-color:var(--brand);color:var(--brand)}
+  .chat-input{display:flex;gap:10px;padding:14px 18px;background:var(--surface);border-top:1px solid var(--line)}
+  .chat-input input{flex:1;min-width:0;border:2px solid var(--line);border-radius:999px;padding:12px 18px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+  .chat-input input:focus{outline:none;border-color:var(--brand)}
+  .chat-note{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);padding:10px 18px 14px;background:var(--surface)}
+  .chat-note svg{width:16px;height:16px}
+
+  /* Severity explainer */
+  .tiers{display:grid;gap:16px;margin-top:32px}
+  @media(min-width:820px){.tiers{grid-template-columns:repeat(3,1fr)}}
+  .tier{background:var(--surface);border-radius:var(--radius);padding:24px;border:1px solid var(--line);border-top:6px solid}
+  .tier.mild{border-top-color:var(--mild)}.tier.moderate{border-top-color:var(--mod)}.tier.urgent{border-top-color:var(--urgent)}
+  .tier h3{font-size:22px;margin:10px 0 6px}
+  .tier p{color:var(--ink-soft);font-size:15px}
+  .tier .eg{margin-top:14px;font-size:14px;padding-top:14px;border-top:1px dashed var(--line)}
+  .tier .eg b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+
+  .steps{display:grid;gap:16px;margin-top:32px}
+  @media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
+  .step{display:flex;gap:16px;align-items:flex-start}
+  .step .num{flex:none;width:44px;height:44px;border-radius:14px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700}
+  .step h3{font-size:19px;margin-bottom:4px}
+  .step p{color:var(--ink-soft);font-size:15px}
+
+  /* Safety */
+  .safety-box{background:var(--ink);color:#fff;border-radius:26px;padding:36px;display:grid;gap:28px}
+  @media(min-width:860px){.safety-box{grid-template-columns:1fr 1.2fr;padding:48px}}
+  .safety-box .kicker{color:var(--accent)}
+  .safety-box .section-sub{color:#B9C7C1}
+  .never{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .never li{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px}
+  .never .x{flex:none;width:28px;height:28px;border-radius:50%;background:rgba(248,113,113,.18);color:#FCA5A5;display:grid;place-items:center}
+  .never .x svg{width:16px;height:16px}
+
+  .footer{padding:28px 0 40px;color:var(--ink-soft);font-size:14px}
+  .footer-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:24px}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+  <symbol id="i-pill" viewBox="0 0 24 24"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+</svg>
+
+<div class="sos" role="note">
+  <div class="wrap">
+    <svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>
+    <span><strong>Medical emergency?</strong> Don&apos;t use this app — call your local emergency number (112 / 108 / 911) now.</span>
+  </div>
+</div>
+
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a class="brand" href="#top">
-      <svg class="brand-mark" viewBox="0 0 64 64" width="30" height="30" aria-hidden="true">
-        <rect width="64" height="64" rx="14" fill="#0F6B52"/>
-        <path d="M6 34 H18 L22 22 L28 46 L34 30 L38 34 H46" fill="none" stroke="#EAF7F1" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M46 34 C46 26 54 24 58 30 C58 38 50 44 46 48 C42 44 34 38 34 30 C36 25 42 26 46 34 Z" fill="#E8A33D"/>
+    <a class="brand" href="#top" aria-label="CureSense AI home">
+      <svg viewBox="0 0 64 64" width="32" height="32" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#F2A93B"/>
+        <path d="M6 34 H18 L22 22 L28 46 L34 30 L38 34 H58" fill="none" stroke="#0B4F3E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span>CureSense<em>AI</em></span>
     </a>
-    <nav class="topnav">
+    <nav class="topnav" aria-label="Main">
+      <a href="#app">Ask now</a>
+      <a href="#tiers">Severity levels</a>
       <a href="#how">How it works</a>
-      <a href="#modes">Get guidance</a>
       <a href="#safety">Safety</a>
     </nav>
-    <button class="btn btn-primary topnav-cta" onclick="scrollToModes()">Start now</button>
+    <a class="btn btn-primary" href="#app">Start now</a>
   </div>
 </header>
 
 <main id="top">
 
-  <!-- HERO -->
   <section class="hero">
     <div class="wrap hero-inner">
-      <div class="hero-copy">
-        <span class="eyebrow">Home remedies · Medicine info · Always know when to see a doctor</span>
-        <h1>Feeling off?<br>Ask <span class="accent-underline">before</span> you assume.</h1>
-        <p class="hero-sub">Describe a symptom or name a medicine. CureSense AI tells you what's mild enough to manage at home, and draws a hard line the moment something needs a doctor — instantly.</p>
-        <div class="hero-actions">
-          <button class="btn btn-primary btn-lg" onclick="scrollToModes()">Check a symptom</button>
-          <button class="btn btn-ghost btn-lg" onclick="scrollToModes()">Look up a medicine</button>
-        </div>
-        <div class="hero-trust">
-          <div class="trust-item"><strong>3 tiers</strong><span>mild · moderate · urgent</span></div>
-          <div class="trust-item"><strong>0</strong><span>dosages ever prescribed</span></div>
-          <div class="trust-item"><strong>24/7</strong><span>on your terminal or browser</span></div>
-        </div>
-      </div>
-
-      <div class="hero-visual" aria-hidden="true">
-        <div class="chat-mock">
-          <div class="chat-mock-head">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span class="chat-mock-title">Symptom Advisor</span>
-          </div>
-          <div class="chat-mock-body">
-            <div class="bubble bubble-user">I have a dry cough since morning</div>
-            <div class="bubble bubble-ai">
-              <span class="tag tag-mild">MILD</span>
-              Try warm water with honey and a pinch of turmeric, plus steam inhalation twice a day.
-            </div>
-            <div class="bubble bubble-user">Can I add sugar instead of honey?</div>
-            <div class="bubble bubble-ai bubble-typing"><span></span><span></span><span></span></div>
-          </div>
-        </div>
-        <svg class="pulse-line" viewBox="0 0 400 80" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 40 H120 L140 10 L165 70 L185 25 L200 40 H260 C275 20 300 20 315 40 C320 55 300 65 285 72 C270 65 262 52 262 40" />
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="how" id="how">
-    <div class="wrap">
-      <h2>How CureSense reasons</h2>
-      <div class="steps">
-        <div class="step">
-          <span class="step-num">01</span>
-          <h3>You describe it</h3>
-          <p>A symptom in plain words, or a medicine name — however you'd say it to a pharmacist.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">02</span>
-          <h3>It classifies severity</h3>
-          <p>Every symptom is sorted into mild, moderate, or urgent before any advice is given.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">03</span>
-          <h3>You get the right response</h3>
-          <p>A home remedy, a nudge to see a doctor, or — if it's serious — a direct line: go now.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MODES / APP -->
-  <section class="modes" id="modes">
-    <div class="wrap">
-      <h2>Start a conversation</h2>
-      <p class="modes-sub">Pick a mode. Ask follow-ups exactly like you would to a person.</p>
-
-      <div class="mode-cards" id="mode-cards">
-        <button class="mode-card" data-mode="symptom" onclick="chooseMode('symptom')">
-          <span class="mode-icon">🌿</span>
-          <h3>Symptom Advisor</h3>
-          <p>Describe how you feel. Get a severity check and a remedy, or a clear "see a doctor."</p>
-          <span class="mode-cta">Start checking →</span>
-        </button>
-        <button class="mode-card" data-mode="medicine" onclick="chooseMode('medicine')">
-          <span class="mode-icon">💊</span>
-          <h3>Medicine Info</h3>
-          <p>Name a medicine. Learn what it treats and what to watch for — no dosages, ever.</p>
-          <span class="mode-cta">Look it up →</span>
-        </button>
-      </div>
-
-      <!-- CHAT PANEL -->
-      <div class="chat-panel" id="chat-panel" hidden>
-        <div class="chat-panel-head">
-          <div class="chat-panel-title">
-            <span id="chat-mode-icon">🌿</span>
-            <span id="chat-mode-label">Symptom Advisor</span>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="goBack()">← Back</button>
-        </div>
-        <div class="chat-panel-body" id="messages"></div>
-        <div class="chat-panel-input">
-          <input type="text" id="user-input" placeholder="Type your message…" autocomplete="off">
-          <button class="btn btn-primary" id="send-btn" onclick="sendMessage()">Send</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SAFETY -->
-  <section class="safety" id="safety">
-    <div class="wrap safety-inner">
-      <div class="safety-badge">⚠️</div>
       <div>
-        <h2>What CureSense will never do</h2>
-        <ul class="safety-list">
-          <li>Name a specific allopathic medicine or dosage to take</li>
-          <li>Replace a real diagnosis from a qualified doctor</li>
-          <li>Stay quiet when a symptom looks urgent — it will always tell you to seek care immediately</li>
+        <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Free · Private · Available 24/7</span>
+        <h1>Not feeling well? <span class="hl">Find out what to do next.</span></h1>
+        <p class="hero-sub">Tell CureSense how you feel or name a medicine. In seconds you&apos;ll know whether it&apos;s safe to manage at home — or whether you need a doctor.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="startMode('symptom')">
+            <svg class="i" aria-hidden="true"><use href="#i-leaf"/></svg>Check a symptom
+          </button>
+          <button class="btn btn-outline btn-lg" onclick="startMode('medicine')">
+            <svg class="i" aria-hidden="true"><use href="#i-pill"/></svg>Look up a medicine
+          </button>
+        </div>
+        <div class="legend" aria-label="Every answer is labelled with a severity level">
+          <div class="legend-item"><span class="sw mild"></span><b>Mild</b> home care</div>
+          <div class="legend-item"><span class="sw mod"></span><b>Moderate</b> see a doctor soon</div>
+          <div class="legend-item"><span class="sw urgent"></span><b>Urgent</b> get help now</div>
+        </div>
+      </div>
+
+      <div class="hero-card" aria-hidden="true">
+        <div class="hero-card-head">
+          <span class="avatar"><svg class="i"><use href="#i-leaf"/></svg></span>
+          Symptom Advisor
+          <span class="status" style="margin-left:auto">Online</span>
+        </div>
+        <div class="hero-card-body">
+          <div class="bubble user">I&apos;ve had a dry cough since this morning</div>
+          <div class="bubble ai"><span class="badge mild">MILD</span><br>Try warm water with honey and a pinch of turmeric, plus steam inhalation twice a day. See a doctor if it lasts over a week.</div>
+          <div class="bubble user">I also have chest pain now</div>
+          <div class="bubble ai is-urgent"><span class="badge urgent">URGENT</span><br>Chest pain needs immediate attention. Please call emergency services or go to the nearest hospital now.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="app" id="app" aria-labelledby="app-title">
+    <div class="wrap">
+      <div class="app-shell">
+        <h2 id="app-title" class="sr-only">Ask CureSense</h2>
+
+        <div class="step-label"><span class="n">1</span>What do you need help with?</div>
+        <div class="mode-cards" id="mode-cards">
+          <button class="mode-card" data-mode="symptom" aria-pressed="true" onclick="startMode('symptom')">
+            <span class="check" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
+            <span class="mode-icon sym"><svg class="i" aria-hidden="true"><use href="#i-leaf"/></svg></span>
+            <h3>Symptom Advisor</h3>
+            <p>Describe how you feel in your own words.</p>
+            <ul>
+              <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Get a severity rating: mild, moderate or urgent</li>
+              <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Safe home remedies for mild issues</li>
+              <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Clear advice on when to see a doctor</li>
+            </ul>
+          </button>
+          <button class="mode-card" data-mode="medicine" aria-pressed="false" onclick="startMode('medicine')">
+            <span class="check" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>
+            <span class="mode-icon med"><svg class="i" aria-hidden="true"><use href="#i-pill"/></svg></span>
+            <h3>Medicine Info</h3>
+            <p>Type the name of any medicine you&apos;ve been given.</p>
+            <ul>
+              <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>What it&apos;s commonly used for</li>
+              <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Side effects and warnings to watch for</li>
+              <li><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Never gives dosages — ask your doctor</li>
+            </ul>
+          </button>
+        </div>
+
+        <div class="chat">
+          <div class="step-label"><span class="n">2</span>Ask your question</div>
+          <div class="chat-panel" id="chat-panel">
+            <div class="chat-head">
+              <div class="chat-title">
+                <span class="avatar" id="chat-mode-icon"><svg class="i" aria-hidden="true"><use href="#i-leaf"/></svg></span>
+                <span id="chat-mode-label">Symptom Advisor</span>
+                <span class="status">Ready</span>
+              </div>
+              <div class="tabs" role="tablist" aria-label="Switch mode">
+                <button class="tab" role="tab" id="tab-symptom" aria-selected="true" onclick="startMode('symptom')">Symptoms</button>
+                <button class="tab" role="tab" id="tab-medicine" aria-selected="false" onclick="startMode('medicine')">Medicines</button>
+              </div>
+            </div>
+
+            <div class="chat-body" id="messages" aria-live="polite" aria-label="Conversation"></div>
+
+            <div class="chips" id="chips"></div>
+
+            <form class="chat-input" onsubmit="event.preventDefault();sendMessage()">
+              <label for="user-input" class="sr-only">Your message</label>
+              <input type="text" id="user-input" placeholder="e.g. I have a headache and feel tired…" autocomplete="off">
+              <button class="btn btn-brand" id="send-btn" type="submit">
+                <span>Send</span><svg class="i" aria-hidden="true"><use href="#i-send"/></svg>
+              </button>
+            </form>
+            <div class="chat-note">
+              <svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>
+              Guidance only — not a diagnosis. If in doubt, see a doctor.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tiers" aria-labelledby="tiers-title">
+    <div class="wrap">
+      <span class="kicker">Understanding your answer</span>
+      <h2 class="section-title" id="tiers-title">Every reply comes with a colour-coded label</h2>
+      <p class="section-sub">So you know at a glance how seriously to take it — and exactly what to do next.</p>
+      <div class="tiers">
+        <article class="tier mild">
+          <span class="badge mild">MILD</span>
+          <h3>Manage at home</h3>
+          <p>Common, low-risk issues. You&apos;ll get simple home remedies and rest advice.</p>
+          <div class="eg"><b>Examples</b>Light cold, dry cough, minor headache, mild acidity</div>
+        </article>
+        <article class="tier moderate">
+          <span class="badge moderate">MODERATE</span>
+          <h3>Book a doctor visit</h3>
+          <p>Not an emergency, but a professional should check it in the next day or two.</p>
+          <div class="eg"><b>Examples</b>Fever over 3 days, persistent pain, rash that spreads</div>
+        </article>
+        <article class="tier urgent">
+          <span class="badge urgent">URGENT</span>
+          <h3>Get help right now</h3>
+          <p>No remedies given. You&apos;ll be told to call emergency services or go to a hospital.</p>
+          <div class="eg"><b>Examples</b>Chest pain, trouble breathing, fainting, heavy bleeding</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="how-title" style="padding-top:0">
+    <div class="wrap">
+      <span class="kicker">How it works</span>
+      <h2 class="section-title" id="how-title">Three steps, under a minute</h2>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><div><h3>Pick a mode</h3><p>Choose Symptoms or Medicines above.</p></div></div>
+        <div class="step"><span class="num">2</span><div><h3>Type like you talk</h3><p>Plain words are fine — the way you&apos;d tell a pharmacist.</p></div></div>
+        <div class="step"><span class="num">3</span><div><h3>Follow the label</h3><p>Home care, doctor visit, or go now. Ask follow-ups any time.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="safety" aria-labelledby="safety-title" style="padding-top:0">
+    <div class="wrap">
+      <div class="safety-box">
+        <div>
+          <span class="kicker">Built-in safety</span>
+          <h2 class="section-title" id="safety-title">What CureSense will never do</h2>
+          <p class="section-sub">These rules are hard limits, not suggestions.</p>
+        </div>
+        <ul class="never">
+          <li><span class="x"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></span>Prescribe a specific allopathic medicine or dosage</li>
+          <li><span class="x"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></span>Replace a real diagnosis from a qualified doctor</li>
+          <li><span class="x"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></span>Stay quiet when something looks urgent — it will always tell you to seek care</li>
         </ul>
       </div>
     </div>
   </section>
-
 </main>
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <span>CureSense AI — a guidance tool, not a diagnosis. When in doubt, see a doctor.</span>
+    <span>CureSense AI — a guidance tool, not a diagnosis.</span>
     <span>Built with LangChain + Mistral</span>
   </div>
 </footer>
 
-<script src="/static/script.js"></script>
+<script>
+  const MODES = {
+    symptom: {
+      label: 'Symptom Advisor', icon: 'i-leaf',
+      placeholder: 'e.g. I have a headache and feel tired…',
+      chips: ['I have a dry cough', 'Mild headache since morning', 'Upset stomach after eating', 'I have chest pain'],
+      intro: { title: 'How are you feeling?', text: 'Describe your symptom and how long you’ve had it. Tap an example below to try.' }
+    },
+    medicine: {
+      label: 'Medicine Info', icon: 'i-pill',
+      placeholder: 'e.g. What is paracetamol used for?',
+      chips: ['Paracetamol', 'Cetirizine', 'Omeprazole', 'Ibuprofen side effects'],
+      intro: { title: 'Which medicine?', text: 'Type a medicine name to learn what it treats and what to watch for. No dosages are given.' }
+    }
+  };
+  let currentMode = 'symptom';
+
+  const $ = (id) => document.getElementById(id);
+
+  function renderEmpty() {
+    const m = MODES[currentMode];
+    $('messages').innerHTML =
+      `<div class="empty"><span class="avatar" style="margin:0 auto;width:48px;height:48px;border-radius:14px"><svg class="i" style="width:24px;height:24px"><use href="#${m.icon}"/></svg></span><h4>${m.intro.title}</h4><p>${m.intro.text}</p></div>`;
+  }
+
+  function renderChips() {
+    const wrap = $('chips');
+    wrap.innerHTML = '<span class="chips-label">Try an example:</span>';
+    MODES[currentMode].chips.forEach((text) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.textContent = text;
+      b.onclick = () => { $('user-input').value = text; sendMessage(); };
+      wrap.appendChild(b);
+    });
+  }
+
+  function startMode(mode) {
+    currentMode = mode;
+    const m = MODES[mode];
+    document.querySelectorAll('.mode-card').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.mode === mode)));
+    $('tab-symptom').setAttribute('aria-selected', String(mode === 'symptom'));
+    $('tab-medicine').setAttribute('aria-selected', String(mode === 'medicine'));
+    $('chat-mode-label').textContent = m.label;
+    $('chat-mode-icon').innerHTML = `<svg class="i"><use href="#${m.icon}"/></svg>`;
+    $('user-input').placeholder = m.placeholder;
+    renderEmpty(); renderChips();
+    $('app').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => $('user-input').focus({ preventScroll: true }), 400);
+    if (typeof window.chooseMode === 'function' && window.chooseMode !== startMode) {
+      try { window.chooseMode(mode); } catch (e) {}
+    }
+  }
+
+  function addBubble(role, text, level) {
+    const box = $('messages');
+    box.querySelector('.empty')?.remove();
+    const div = document.createElement('div');
+    div.className = `bubble ${role}` + (level === 'urgent' ? ' is-urgent' : '');
+    if (level) {
+      const badge = document.createElement('span');
+      badge.className = `badge ${level}`;
+      badge.textContent = level.toUpperCase();
+      div.appendChild(badge);
+      div.appendChild(document.createElement('br'));
+    }
+    div.appendChild(document.createTextNode(text));
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    return div;
+  }
+
+  function demoReply(msg) {
+    const t = msg.toLowerCase();
+    if (currentMode === 'medicine') {
+      return { level: 'info', text: `Here’s general information about "${msg}": what it’s commonly used for, typical side effects, and who should be careful with it. CureSense never gives dosages — always follow your doctor or pharmacist’s instructions.` };
+    }
+    if (/chest|breath|faint|bleed|unconscious|stroke|seizure/.test(t))
+      return { level: 'urgent', text: 'This could be serious. Please call emergency services or go to the nearest hospital right now. Do not wait.' };
+    if (/fever|days|week|rash|vomit|severe|pain/.test(t))
+      return { level: 'moderate', text: 'This is worth getting checked. Please book a visit with a doctor within the next day or two. Meanwhile, rest and stay hydrated.' };
+    return { level: 'mild', text: 'This sounds mild. Try warm water with honey, rest well and stay hydrated. If it gets worse or lasts more than a few days, see a doctor.' };
+  }
+
+  async function sendMessage() {
+    const input = $('user-input');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addBubble('user', text);
+    const typing = document.createElement('div');
+    typing.className = 'bubble ai typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    $('messages').appendChild(typing);
+    $('messages').scrollTop = $('messages').scrollHeight;
+    $('send-btn').disabled = true;
+
+    await new Promise((r) => setTimeout(r, 900));
+    typing.remove();
+    const r = demoReply(text);
+    addBubble('ai', r.text, r.level);
+    $('send-btn').disabled = false;
+    input.focus();
+  }
+
+  function goBack() { startMode(currentMode); }
+  function scrollToModes() { $('app').scrollIntoView({ behavior: 'smooth' }); }
+
+  renderEmpty();
+  renderChips();
+</script>
 </body>
 </html>
